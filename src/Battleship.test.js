@@ -1,6 +1,8 @@
 const Ship = require("./Ship");
 const Gameboard = require("./Gameboard");
+const Player = require("./Player");
 
+// Testing the Ship
 test("the hit function", () => {
     const testShip = new Ship(2);
     testShip.hit(0);
@@ -15,17 +17,11 @@ test("the hit function", () => {
     expect(testShip.isSunk()).toBe(false);
 });
 
-// Testing Gameboard
-test("The board in Gameboard", () => {
-    const testGameboard = new Gameboard();
-    console.log(testGameboard.board);
-});
-
 test("recieveAttack", () => {
     const testGameboard = new Gameboard();
-    testGameboard.recieveAttack(1, 0);
-    testGameboard.recieveAttack(1, 1);
-    testGameboard.recieveAttack(1, 2);
+    testGameboard.recieveAttack({ y: 1, x: 0 });
+    testGameboard.recieveAttack({ y: 1, x: 1 });
+    testGameboard.recieveAttack({ y: 1, x: 2 });
     expect(testGameboard.ships[1].isSunk()).toBe(true);
 });
 
@@ -33,8 +29,65 @@ test("hasLost false", () => {
     const testGameboard = new Gameboard();
     for (let i = 0; i < 5; i++) {
         for (let j = 0; j < testGameboard.ships[i].ship.size; j++) {
-            testGameboard.recieveAttack(i, j);
+            testGameboard.recieveAttack({ y: i, x: j });
         }
     }
     expect(testGameboard.hasLost()).toBe(true);
+});
+
+// Testing the Player
+test("player board exist", () => {
+    const player = new Player("Zoku");
+    const ai = new Player();
+    expect(player.playerName).toBe("Zoku");
+    expect(ai.playerName).toBe("CPU-AI");
+});
+
+test("AI generate Number", () => {
+    const ai = new Player();
+    const generatedValue = ai.generateAttack();
+    expect(generatedValue.x).toBeGreaterThan(-1);
+    expect(generatedValue.x).toBeLessThan(10);
+    expect(generatedValue.y).toBeGreaterThan(-1);
+    expect(generatedValue.y).toBeLessThan(10);
+});
+
+test("Prevention of non-ai players from using ai function", () => {
+    const player = new Player("Zoku");
+    expect(() => {
+        player.generateAttack();
+    }).toThrow("Non-AI player is making a move!");
+});
+
+test("AI single strike", () => {
+    const player = new Player("Zoku");
+    const ai = new Player();
+    let hasNotHit = true;
+    let striked = undefined;
+    while (hasNotHit) {
+        striked = player.playerBoard.recieveAttack(ai.generateAttack());
+        if (striked !== undefined) {
+            hasNotHit = false;
+        }
+    }
+    expect(striked).toBeInstanceOf(Object);
+});
+
+test("AI drop a player ship", () => {
+    const player = new Player("Zoku");
+    const ai = new Player();
+    let hasNotDestroyed = true;
+    let striked = null;
+    while (hasNotDestroyed) {
+        while (striked === null) {
+            striked = player.playerBoard.recieveAttack(ai.generateAttack());
+        }
+        if (striked instanceof Array) {
+            hasNotDestroyed = false;
+            ai.flushMarks(striked);
+        } else if (striked instanceof Object) {
+            ai.markAttack(striked);
+        }
+        striked = null;
+    }
 });

@@ -1,4 +1,5 @@
 class Ship {
+    #coords = [];
     constructor(size) {
         this.ship = { size, hits: 0, sunk: false };
     }
@@ -16,6 +17,15 @@ class Ship {
             return true;
         }
         return false;
+    }
+
+    appendCoord(coord) {
+        if (this.#coords.length <= this.ship.size) this.#coords.push(coord);
+        else throw "The coords of the ship are beyond the size limit!";
+    }
+
+    getCoords() {
+        return this.#coords;
     }
 }
 

@@ -30,22 +30,28 @@ class Gameboard {
             : this.#placeShipVertical(id, this.ships[id].ship.size, y, x);
     }
 
+    #placeShipHorizontal(id, size, y, x) {
+        this.#validateInitialPosition(0, size, y, x);
+        for (let i = x; i < x + size; i++) {
+            this.board[y][i] = id;
+            this.ships[id].appendCoord({ y: y, x: i });
+        }
+    }
+
+    #placeShipVertical(id, size, y, x) {
+        this.#validateInitialPosition(1, size, y, x);
+        for (let i = y; i < y + size; i++) {
+            this.board[i][x] = id;
+            this.ships[id].appendCoord({ y: y, x: i });
+        }
+    }
+
     #presetPlaceShips(direction) {
         //for x directional placement
         if (direction === 0)
             for (let i = 0; i < 5; i++) this.placeShip(direction, i, i, 0);
         // for y directional placement
         else for (let i = 0; i < 5; i++) this.placeShip(direction, i, 0, i);
-    }
-
-    #placeShipHorizontal(id, size, y, x) {
-        this.#validateInitialPosition(0, size, y, x);
-        for (let i = x; i < x + size; i++) this.board[y][i] = id;
-    }
-
-    #placeShipVertical(id, size, y, x) {
-        this.#validateInitialPosition(1, size, y, x);
-        for (let i = y; i < y + size; i++) this.board[i][x] = id;
     }
 
     #validateInitialPosition(direction, size, y, x) {
@@ -87,14 +93,24 @@ class Gameboard {
     }
 
     // react to attack at coordinate 'y' and 'x'.
-    recieveAttack(y, x) {
-        const coord = this.board[y][x];
-        if (coord !== null && coord !== -1) {
-            this.ships[coord].hit();
-            this.board[y][x] = -1;
-        } else if (coord === null) {
-            this.board[y][x] = -1;
-        } else throw "Repeated hit!";
+    recieveAttack(coord) {
+        const positionID = this.board[coord.y][coord.x];
+        if (positionID !== null && positionID !== -1) {
+            this.ships[positionID].hit();
+            this.board[coord.y][coord.x] = -1;
+            if (!this.ships[positionID].isSunk()) return coord;
+            else return this.ships[positionID].getCoords();
+        } else if (positionID === null) {
+            this.board[coord.y][coord.x] = -1;
+        } else if (coord.smart === undefined) {
+            return Math.floor(Math.random() * 2) === 0
+                ? coord.y === 9
+                    ? this.recieveAttack({ y: 0, x: coord.x })
+                    : this.recieveAttack({ y: coord.y + 1, x: coord.x })
+                : coord.x === 9
+                ? this.recieveAttack({ y: coord.y, x: 0 })
+                : this.recieveAttack({ y: coord.y, x: coord.x + 1 });
+        } else return null;
     }
 
     hasLost() {
@@ -102,6 +118,17 @@ class Gameboard {
             if (this.ships[i].isSunk() === false) return false;
         }
         return true;
+    }
+
+    printBoard() {
+        let toprint = "";
+        for (let i = 0; i < this.#BOARDSIZE; i++) {
+            for (let j = 0; j < this.#BOARDSIZE; j++) {
+                toprint += this.board[i][j] + "\t";
+            }
+            toprint += "\n";
+        }
+        return toprint;
     }
 }
 
