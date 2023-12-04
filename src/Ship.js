@@ -20,7 +20,7 @@ class Ship {
     }
 
     appendCoord(coord) {
-        if (this.#coords.length <= this.ship.size) this.#coords.push(coord);
+        if (this.#coords.length < this.ship.size) this.#coords.push(coord);
         else throw "The coords of the ship are beyond the size limit!";
     }
 
