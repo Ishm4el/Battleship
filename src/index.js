@@ -21,24 +21,6 @@ function generateBoard() {
     return board;
 }
 
-function generateBoardHover() {
-    const board = document.createElement("div");
-    board.classList.add("board-hover");
-    for (let i = 0; i < 10; i++) {
-        const column = document.createElement("div");
-        column.classList.add("board-hover-row");
-        board.appendChild(column);
-        for (let j = 0; j < 10; j++) {
-            const row = document.createElement("div");
-            row.classList.add("board-hover-tile");
-            row.dataset.column = i;
-            row.dataset.row = j;
-            column.appendChild(row);
-        }
-    }
-    return board;
-}
-
 async function determineAttack(board) {
     let coord;
     const tiles = board.querySelectorAll(".board-tile");
@@ -66,8 +48,7 @@ async function game() {
     playerAI.boardDOM = generateBoard();
     body.appendChild(player.boardDOM);
     body.appendChild(playerAI.boardDOM);
-    body.appendChild(generateBoardHover());
-    const first = await determineAttack(player.boardDOM);
+    const first = await determineAttack(playerAI.boardDOM);
     console.log(first);
 }
 

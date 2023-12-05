@@ -6,23 +6,9 @@
 body,
 .board,
 .board-row,
-.board-tile,
-.board-hover,
-.board-hover-row,
-.board-hover-tile {
+.board-tile {
     display: flex;
     position: relative;
-}
-
-.board-hover,
-.board-hover-row,
-.board-hover-tile {
-    z-index: -1;
-}
-
-.board-hover {
-    position: absolute;
-    z-index: 1;
 }
 
 body {
@@ -38,8 +24,7 @@ body {
     justify-content: space-around;
 }
 
-.board,
-.board-hover {
+.board {
     flex-direction: column;
 }
 
@@ -56,23 +41,10 @@ body {
     border: 1px white solid;
 }
 
-.board-hover-tile {
-    width: 4vw;
-    height: 4vw;
-    background-image: linear-gradient(
-        20deg,
-        black,
-        rgb(65, 65, 65),
-        black,
-        rgb(65, 65, 65)
-    );
-    border: 1px white solid;
-}
-
-.board:first-child .board-tile:hover {
+.board:last-child .board-tile:hover {
     background-image: radial-gradient(black, darkred);
 }
 
-.board:first-child .board-tile:active {
+.board:last-child .board-tile:active {
     background-image: radial-gradient(rgb(183, 0, 0), rgb(0, 0, 0));
 }
