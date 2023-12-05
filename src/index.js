@@ -45,6 +45,15 @@ function playerBoardShot(board, coord) {
     }
 }
 
+function shipHit(board, coord) {
+    const tile = board.querySelector(
+        `[data-column="${coord.y}"][data-row="${coord.x}"]`
+    );
+
+    tile.classList.remove("board-tile-ship");
+    tile.classList.add("board-tile-ship-shot");
+}
+
 function flushShip(board, ar) {
     ar.forEach((coord) => {
         playerBoardShot(board, coord);
@@ -90,7 +99,14 @@ async function game() {
     body.appendChild(playerAI.boardDOM);
     while (!player.board.hasLost() && !playerAI.board.hasLost()) {
         const playerShoot = await coordinateAttack(playerAI.boardDOM);
-        playerAI.board.recieveAttack(playerShoot);
+        const boardReact = playerAI.board.recieveAttack(playerShoot);
+        if (boardReact instanceof Array) {
+            console.log(boardReact);
+            boardReact.forEach((coord) => {
+                shipHit(playerAI.boardDOM, coord);
+            });
+        } else if (boardReact instanceof Object)
+            shipHit(playerAI.boardDOM, boardReact);
 
         let enemyLandedHit = null;
         let aiCoordinatedAttack = null;
@@ -101,7 +117,6 @@ async function game() {
         }
         console.log(enemyLandedHit);
         if (enemyLandedHit instanceof Array) {
-            console.log(enemyLandedHit[0]);
             playerAI.flushMarks(enemyLandedHit);
             flushShip(player.boardDOM, enemyLandedHit);
         } else if (enemyLandedHit instanceof Object) {
