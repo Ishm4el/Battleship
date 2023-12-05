@@ -21,6 +21,16 @@ function generateBoard() {
     return board;
 }
 
+function addShip(board, ship) {
+    ship.forEach(function fillTile(coord) {
+        const tile = board.querySelector(
+            `[data-column="${coord.y}"][data-row="${coord.x}"]`
+        );
+        tile.classList.remove("board-tile");
+        tile.classList.add("board-tile-ship");
+    });
+}
+
 async function determineAttack(board) {
     let coord;
     const tiles = board.querySelectorAll(".board-tile");
@@ -28,6 +38,8 @@ async function determineAttack(board) {
     await new Promise((myResolve) => {
         tiles.forEach((node) => {
             node.addEventListener("click", () => {
+                node.classList.remove("board-tile");
+                node.classList.add("board-tile-shot");
                 tiles.forEach((node) => {
                     node.replaceWith(node.cloneNode(false));
                 });
@@ -45,6 +57,10 @@ async function game() {
     const playerAI = new PlayerAI();
     const body = document.getElementsByTagName("body")[0];
     player.boardDOM = generateBoard();
+    addShip(player.boardDOM, [
+        { y: 0, x: 0 },
+        { y: 1, x: 0 },
+    ]);
     playerAI.boardDOM = generateBoard();
     body.appendChild(player.boardDOM);
     body.appendChild(playerAI.boardDOM);
