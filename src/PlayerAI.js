@@ -8,8 +8,8 @@ class PlayerAI extends Player {
     generateAttack() {
         if (this.#DetectedAttacks.length === 0)
             return {
-                x: Math.floor(Math.random() * 10),
                 y: Math.floor(Math.random() * 10),
+                x: Math.floor(Math.random() * 10),
             };
         else {
             const smartAttack = this.#smartGenerateAttack(

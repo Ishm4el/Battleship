@@ -31,7 +31,27 @@ function addShip(board, ship) {
     });
 }
 
-async function markAttack(board) {
+function playerBoardShot(board, coord) {
+    const tile = board.querySelector(
+        `[data-column="${coord.y}"][data-row="${coord.x}"]`
+    );
+
+    if (tile.classList.contains("board-tile-ship")) {
+        tile.classList.remove("board-tile-ship");
+        tile.classList.add("board-tile-ship-shot");
+    } else {
+        tile.classList.remove("board-tile");
+        tile.classList.add("board-tile-shot");
+    }
+}
+
+function flushShip(board, ar) {
+    ar.forEach((coord) => {
+        playerBoardShot(board, coord);
+    });
+}
+
+async function coordinateAttack(board) {
     let coord;
     const tiles = board.querySelectorAll(".board-tile");
 
@@ -40,6 +60,11 @@ async function markAttack(board) {
             node.addEventListener("click", () => {
                 node.classList.remove("board-tile");
                 node.classList.add("board-tile-shot");
+                if (node.classList.contains("board-tile-ship")) {
+                    node.classList.remove("board-tile-ship");
+                    node.classList.remove("board-tile-shot");
+                    node.classList.add("board-tile-ship-shot");
+                }
                 tiles.forEach((node) => {
                     node.replaceWith(node.cloneNode(false));
                 });
@@ -64,14 +89,37 @@ async function game() {
     body.appendChild(player.boardDOM);
     body.appendChild(playerAI.boardDOM);
     while (!player.board.hasLost() && !playerAI.board.hasLost()) {
-        const playerShoot = await markAttack(playerAI.boardDOM);
+        const playerShoot = await coordinateAttack(playerAI.boardDOM);
         playerAI.board.recieveAttack(playerShoot);
+
+        let enemyLandedHit = null;
+        let aiCoordinatedAttack = null;
+        while (enemyLandedHit === null) {
+            console.log("ai making shot");
+            aiCoordinatedAttack = playerAI.generateAttack();
+            enemyLandedHit = player.board.recieveAttack(aiCoordinatedAttack);
+        }
+        console.log(enemyLandedHit);
+        if (enemyLandedHit instanceof Array) {
+            console.log(enemyLandedHit[0]);
+            playerAI.flushMarks(enemyLandedHit);
+            flushShip(player.boardDOM, enemyLandedHit);
+        } else if (enemyLandedHit instanceof Object) {
+            playerAI.markAttack(enemyLandedHit);
+            playerBoardShot(player.boardDOM, enemyLandedHit);
+        } else {
+            playerBoardShot(player.boardDOM, aiCoordinatedAttack);
+        }
     }
     if (playerAI.board.hasLost()) {
         console.log(`${player.name} has won!`);
     } else if (player.board.hasLost()) {
         console.log(`${playerAI.name} has won!`);
     } else throw "Nobody won??";
+    document.querySelectorAll(".board-tile").forEach((node) => {
+        node.classList.remove("board-tile");
+        node.classList.add("board-tile-finished");
+    });
 }
 
 game();

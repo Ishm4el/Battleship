@@ -30,7 +30,9 @@ body {
 
 .board-tile,
 .board-tile-shot,
-.board-tile-ship {
+.board-tile-ship,
+.board-tile-ship-shot,
+.board-tile-finished {
     width: 4vw;
     height: 4vw;
     border: 1px white solid;
@@ -54,10 +56,18 @@ body {
     background-image: radial-gradient(rgb(183, 0, 0), rgb(0, 0, 0));
 }
 
+.board-tile-finished {
+    background-image: linear-gradient(blue, darkblue);
+}
+
 .board-tile-shot {
     background-image: radial-gradient(red, black);
 }
 
 .board-tile-ship {
     background-color: gray;
+}
+
+.board-tile-ship-shot {
+    background-image: repeating-radial-gradient(gray, red);
 }
