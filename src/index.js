@@ -31,7 +31,7 @@ function addShip(board, ship) {
     });
 }
 
-async function determineAttack(board) {
+async function markAttack(board) {
     let coord;
     const tiles = board.querySelectorAll(".board-tile");
 
@@ -57,15 +57,21 @@ async function game() {
     const playerAI = new PlayerAI();
     const body = document.getElementsByTagName("body")[0];
     player.boardDOM = generateBoard();
-    addShip(player.boardDOM, [
-        { y: 0, x: 0 },
-        { y: 1, x: 0 },
-    ]);
     playerAI.boardDOM = generateBoard();
+    player.board.ships.forEach((ship) => {
+        addShip(player.boardDOM, ship.getCoords());
+    });
     body.appendChild(player.boardDOM);
     body.appendChild(playerAI.boardDOM);
-    const first = await determineAttack(playerAI.boardDOM);
-    console.log(first);
+    while (!player.board.hasLost() && !playerAI.board.hasLost()) {
+        const playerShoot = await markAttack(playerAI.boardDOM);
+        playerAI.board.recieveAttack(playerShoot);
+    }
+    if (playerAI.board.hasLost()) {
+        console.log(`${player.name} has won!`);
+    } else if (player.board.hasLost()) {
+        console.log(`${playerAI.name} has won!`);
+    } else throw "Nobody won??";
 }
 
 game();
