@@ -108,6 +108,4 @@ test("AI drop a player ship", () => {
     }
 });
 
-test.only("Testing random placement for AI", () => {
-    const ai = new PlayerAI();
-});
+test.only("Testing random placement for AI", () => {});

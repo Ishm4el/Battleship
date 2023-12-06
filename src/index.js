@@ -90,21 +90,18 @@ async function game() {
     const player = new Player();
     player.board.presetPlaceShips(0);
     const playerAI = new PlayerAI();
-    console.log(playerAI.board.printBoard());
-    const body = document.getElementsByTagName("body")[0];
     player.boardDOM = generateBoard();
     playerAI.boardDOM = generateBoard();
     player.board.ships.forEach((ship) => {
         addShip(player.boardDOM, ship.getCoords());
     });
-    body.appendChild(player.boardDOM);
-    body.appendChild(playerAI.boardDOM);
+    const boardSpace = document.getElementById("board-space");
+    boardSpace.appendChild(player.boardDOM);
+    boardSpace.appendChild(playerAI.boardDOM);
     while (!player.board.hasLost() && !playerAI.board.hasLost()) {
         const playerShoot = await coordinateAttack(playerAI.boardDOM);
-        console.log("playerShoot: " + JSON.stringify(playerShoot));
         const boardReact = playerAI.board.recieveAttack(playerShoot);
         if (boardReact instanceof Array) {
-            console.log(boardReact);
             boardReact.forEach((coord) => {
                 shipHit(playerAI.boardDOM, coord);
             });
@@ -114,11 +111,9 @@ async function game() {
         let enemyLandedHit = null;
         let aiCoordinatedAttack = null;
         while (enemyLandedHit === null) {
-            // console.log("ai making shot");
             aiCoordinatedAttack = playerAI.generateAttack();
             enemyLandedHit = player.board.recieveAttack(aiCoordinatedAttack);
         }
-        // console.log(enemyLandedHit);
         if (enemyLandedHit instanceof Array) {
             playerAI.flushMarks(enemyLandedHit);
             flushShip(player.boardDOM, enemyLandedHit);
@@ -140,4 +135,5 @@ async function game() {
     });
 }
 
+const body = document.getElementsByTagName("body")[0];
 game();

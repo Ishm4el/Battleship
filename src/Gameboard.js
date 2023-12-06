@@ -35,25 +35,21 @@ class Gameboard {
         while (tillValid) {
             const directionRoll = Math.floor(Math.random() * 2);
             if (directionRoll === 0) {
-                console.log("in hori");
                 const x = Math.floor(
                     Math.random() * (11 - this.ships[id].ship.size)
                 );
                 const y = Math.floor(Math.random() * 10);
                 if (this.#validatePlacement(directionRoll, id, y, x)) {
                     this.placeShip(directionRoll, id, y, x);
-                    console.log("valid");
                     tillValid = false;
                 }
             } else if (directionRoll === 1) {
-                console.log("in verti");
                 const x = Math.floor(Math.random() * 10);
                 const y = Math.floor(
                     Math.random() * (11 - this.ships[id].ship.size)
                 );
                 if (this.#validatePlacement(directionRoll, id, y, x)) {
                     this.placeShip(directionRoll, id, y, x);
-                    console.log("valid");
                     tillValid = false;
                 }
             }
@@ -154,7 +150,6 @@ class Gameboard {
         coord.y = Number(coord.y);
         coord.x = Number(coord.x);
         const positionID = this.board[coord.y][coord.x];
-        console.log("positionID: " + positionID);
         if (positionID !== null && positionID !== -1) {
             this.ships[positionID].hit();
             this.board[coord.y][coord.x] = -1;
