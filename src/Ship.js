@@ -25,6 +25,7 @@ class Ship {
     }
 
     getCoords() {
+        console.log("in getCoord: " + JSON.stringify(this.#coords));
         return this.#coords;
     }
 }

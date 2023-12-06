@@ -26,6 +26,7 @@ test("recieveAttack", () => {
     expect(testGameboard.ships[1].isSunk()).toBe(true);
 });
 
+// Testing the gameboard
 test("hasLost false", () => {
     const testGameboard = new Gameboard();
     for (let i = 0; i < 5; i++) {
@@ -43,6 +44,18 @@ test("prevent appending out of bounds", () => {
         boat.appendCoord({ x: 1, y: 0 });
         boat.appendCoord({ x: 2, y: 0 });
     }).toThrow("The coords of the ship are beyond");
+});
+
+test("Validate tile", () => {
+    const testGameboard = new Gameboard();
+    expect(testGameboard.validatePlacementTile(0, 0)).toBe(true);
+    expect(testGameboard.validatePlacementTile(10, 0)).toBe(false);
+});
+
+test("valid ship placement", () => {
+    const testGameboard = new Gameboard();
+    expect(testGameboard.validatePlacement(0, 0, 0, 0)).toBe(true);
+    expect(testGameboard.validatePlacement(0, 1, 0, 8)).toBe(false);
 });
 
 // Testing the Player
@@ -93,4 +106,8 @@ test("AI drop a player ship", () => {
         }
         striked = null;
     }
+});
+
+test.only("Testing random placement for AI", () => {
+    const ai = new PlayerAI();
 });

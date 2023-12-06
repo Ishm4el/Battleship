@@ -21,7 +21,43 @@ class Gameboard {
         ];
 
         // For test usage - will populate the ships on the board.
-        this.#presetPlaceShips(0);
+        // this.#presetPlaceShips(0);
+        // randomly populate the board with the ships
+    }
+
+    randomlyPlaceAllShip() {
+        for (let i = 0; i < this.ships.length; i++)
+            this.#generateShipPlacement(i);
+    }
+
+    #generateShipPlacement(id) {
+        let tillValid = true;
+        while (tillValid) {
+            const directionRoll = Math.floor(Math.random() * 2);
+            if (directionRoll === 0) {
+                console.log("in hori");
+                const x = Math.floor(
+                    Math.random() * (11 - this.ships[id].ship.size)
+                );
+                const y = Math.floor(Math.random() * 10);
+                if (this.#validatePlacement(directionRoll, id, y, x)) {
+                    this.placeShip(directionRoll, id, y, x);
+                    console.log("valid");
+                    tillValid = false;
+                }
+            } else if (directionRoll === 1) {
+                console.log("in verti");
+                const x = Math.floor(Math.random() * 10);
+                const y = Math.floor(
+                    Math.random() * (11 - this.ships[id].ship.size)
+                );
+                if (this.#validatePlacement(directionRoll, id, y, x)) {
+                    this.placeShip(directionRoll, id, y, x);
+                    console.log("valid");
+                    tillValid = false;
+                }
+            }
+        }
     }
 
     placeShip(direction, id, y, x) {
@@ -42,11 +78,11 @@ class Gameboard {
         this.#validateInitialPosition(1, size, y, x);
         for (let i = y; i < y + size; i++) {
             this.board[i][x] = id;
-            this.ships[id].appendCoord({ y: y, x: i });
+            this.ships[id].appendCoord({ y: i, x: x });
         }
     }
 
-    #presetPlaceShips(direction) {
+    presetPlaceShips(direction) {
         //for x directional placement
         if (direction === 0)
             for (let i = 0; i < 5; i++) this.placeShip(direction, i, i, 0);
@@ -92,9 +128,33 @@ class Gameboard {
         }
     }
 
+    #validatePlacement(direction, id, y, x) {
+        if (direction === 0) {
+            for (let i = x; i < x + this.ships[id].ship.size; i++) {
+                if (!this.#validatePlacementTile(y, i)) return false;
+            }
+        } else {
+            for (let i = y; i < y + this.ships[id].ship.size; i++) {
+                if (!this.#validatePlacementTile(i, x)) return false;
+            }
+        }
+        return true;
+    }
+
+    #validatePlacementTile(y, x) {
+        // determine if placement conflicts
+        if (y > 9 || y < 0) return false;
+        else if (x > 9 || x < 0) return false;
+        else if (this.board[y][x] !== null) return false;
+        else return true;
+    }
+
     // react to attack at coordinate 'y' and 'x'.
     recieveAttack(coord) {
+        coord.y = Number(coord.y);
+        coord.x = Number(coord.x);
         const positionID = this.board[coord.y][coord.x];
+        console.log("positionID: " + positionID);
         if (positionID !== null && positionID !== -1) {
             this.ships[positionID].hit();
             this.board[coord.y][coord.x] = -1;
@@ -124,7 +184,8 @@ class Gameboard {
         let toprint = "";
         for (let i = 0; i < this.#BOARDSIZE; i++) {
             for (let j = 0; j < this.#BOARDSIZE; j++) {
-                toprint += this.board[i][j] + "\t";
+                toprint +=
+                    this.board[i][j] === null ? "n\t" : this.board[i][j] + "\t";
             }
             toprint += "\n";
         }

@@ -4,6 +4,7 @@ class PlayerAI extends Player {
     #DetectedAttacks = [];
     constructor() {
         super("CPU-AI");
+        this.board.randomlyPlaceAllShip();
     }
     generateAttack() {
         if (this.#DetectedAttacks.length === 0)
