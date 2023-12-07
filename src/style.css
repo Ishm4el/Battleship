@@ -21,12 +21,73 @@ body {
         darkblue
     );
     display: grid;
-    grid-template: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 2fr 2fr;
 }
 
 #board-space {
     align-items: center;
     justify-content: space-around;
+}
+
+#footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: center;
+}
+
+.pieces-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    flex: auto;
+}
+
+.pieces-top-row,
+.pieces-bot-row {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.pieces-block {
+    display: flex;
+}
+
+.board-tile-footer {
+    width: 3.5vw;
+    height: 3.5vw;
+    border: 1px white solid;
+    background-color: gray;
+}
+
+.direction-button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.direction-button {
+    color: white;
+    font-size: 4vw;
+    background-color: rgb(62, 62, 62);
+    user-select: none;
+    cursor: pointer;
+    border: 1px green solid;
+    height: 6vw;
+    width: 6vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.direction-button:hover {
+    background-color: rgb(45, 45, 45);
+}
+
+.direction-button:active {
+    background-color: rgb(158, 158, 158);
 }
 
 .board {
