@@ -54,6 +54,7 @@ body {
 
 .pieces-block {
     display: flex;
+    user-select: none;
 }
 
 .board-tile-footer {
@@ -61,6 +62,17 @@ body {
     height: 3.5vw;
     border: 1px white solid;
     background-color: gray;
+}
+
+.board-tile-footer-head {
+    font-size: 3.5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.draggable {
+    cursor: grab;
 }
 
 .direction-button-container {
@@ -116,10 +128,12 @@ body {
 
 .board:last-child .board-tile:hover {
     background-image: radial-gradient(black, darkred);
+    cursor: crosshair;
 }
 
 .board:last-child .board-tile:active {
     background-image: radial-gradient(rgb(183, 0, 0), rgb(0, 0, 0));
+    cursor: crosshair;
 }
 
 .board-tile-finished {
@@ -136,4 +150,9 @@ body {
 
 .board-tile-ship-shot {
     background-image: repeating-radial-gradient(gray, red);
+}
+
+.board:last-child .board-tile-shot:hover,
+.board:last-child .board-tile-ship-shot {
+    cursor: crosshair;
 }

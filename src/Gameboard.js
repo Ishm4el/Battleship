@@ -39,7 +39,7 @@ class Gameboard {
                     Math.random() * (11 - this.ships[id].ship.size)
                 );
                 const y = Math.floor(Math.random() * 10);
-                if (this.#validatePlacement(directionRoll, id, y, x)) {
+                if (this.validatePlacement(directionRoll, id, y, x)) {
                     this.placeShip(directionRoll, id, y, x);
                     tillValid = false;
                 }
@@ -48,7 +48,7 @@ class Gameboard {
                 const y = Math.floor(
                     Math.random() * (11 - this.ships[id].ship.size)
                 );
-                if (this.#validatePlacement(directionRoll, id, y, x)) {
+                if (this.validatePlacement(directionRoll, id, y, x)) {
                     this.placeShip(directionRoll, id, y, x);
                     tillValid = false;
                 }
@@ -124,7 +124,7 @@ class Gameboard {
         }
     }
 
-    #validatePlacement(direction, id, y, x) {
+    validatePlacement(direction, id, y, x) {
         if (direction === 0) {
             for (let i = x; i < x + this.ships[id].ship.size; i++) {
                 if (!this.#validatePlacementTile(y, i)) return false;

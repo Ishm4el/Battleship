@@ -81,7 +81,7 @@ async function coordinateAttack(board) {
     return coord;
 }
 
-function generateBottomPieces() {
+function generateBottomPieces(player = null) {
     const container = document.createElement("div");
     container.classList.add("footer-container");
     const piecesContainer = document.createElement("div");
@@ -94,19 +94,42 @@ function generateBottomPieces() {
     const blockGenerator = (size) => {
         const block = document.createElement("div");
         block.classList.add("pieces-block");
-        block.setAttribute("draggable", "true");
+        if (player !== null) {
+            block.classList.add("draggable");
+            block.setAttribute("draggable", "true");
+        }
+
         for (let i = 0; i < size; i++) {
             const tile = document.createElement("div");
             tile.classList.add("board-tile-footer");
             block.appendChild(tile);
         }
+        block.firstChild.classList.add("board-tile-footer-head");
+        block.firstChild.innerText = "#";
         return block;
     };
 
-    topRow.append(blockGenerator(2), blockGenerator(3), blockGenerator(3));
-    botRow.append(blockGenerator(4), blockGenerator(5));
+    const blocks = [
+        blockGenerator(2),
+        blockGenerator(3),
+        blockGenerator(3),
+        blockGenerator(4),
+        blockGenerator(5),
+    ];
+    for (let i = 0; i < blocks.length; i++) {
+        blocks[i].dataset.id = String(i);
+    }
+    blocks[0].dataset.size = "1";
+    blocks[1].dataset.size = "2";
+    blocks[2].dataset.size = "2";
+    blocks[3].dataset.size = "3";
+    blocks[4].dataset.size = "4";
+
+    topRow.append(blocks[0], blocks[1], blocks[2]);
+    botRow.append(blocks[3], blocks[4]);
     piecesContainer.append(topRow, botRow);
     container.append(piecesContainer);
+    if (player === null) container.appendChild(generateDirectionButton());
     return container;
 }
 

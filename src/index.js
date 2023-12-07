@@ -6,16 +6,28 @@ const Render = require("./Render");
 
 async function game() {
     const player = new Player();
-    player.board.presetPlaceShips(0);
     const playerAI = new PlayerAI();
     player.boardDOM = Render.generateBoard();
     playerAI.boardDOM = Render.generateBoard();
-    player.board.ships.forEach((ship) => {
-        Render.addShip(player.boardDOM, ship.getCoords());
-    });
     const boardSpace = document.getElementById("board-space");
     boardSpace.appendChild(player.boardDOM);
     boardSpace.appendChild(playerAI.boardDOM);
+
+    // Generate the footer that the user will be able use
+    const footer = document.getElementById("footer");
+    playerFooter = Render.generateBottomPieces(player);
+    playerFooter.appendChild(Render.generateDirectionButton());
+    footer.appendChild(playerFooter);
+
+    // Add the AI Footer.
+    footer.appendChild(Render.generateBottomPieces());
+
+    // // Generate preset board for the player.
+    // player.board.presetPlaceShips(0);
+    // player.board.ships.forEach((ship) => {
+    //     Render.addShip(player.boardDOM, ship.getCoords());
+    // });
+
     while (!player.board.hasLost() && !playerAI.board.hasLost()) {
         const playerShoot = await Render.coordinateAttack(playerAI.boardDOM);
         const boardReact = playerAI.board.recieveAttack(playerShoot);
@@ -53,10 +65,4 @@ async function game() {
     });
 }
 
-const body = document.getElementsByTagName("body")[0];
-const footer = document.getElementById("footer");
-playerFooter = Render.generateBottomPieces();
-playerFooter.appendChild(Render.generateDirectionButton());
-footer.appendChild(playerFooter);
-footer.appendChild(Render.generateBottomPieces());
 game();
