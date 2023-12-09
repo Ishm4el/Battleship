@@ -20,6 +20,37 @@ async function game() {
         Render.generateBottomPieces()
     );
 
+    // create drag event listeners
+    const allUserBlocks = document.querySelectorAll('[draggable="true"');
+
+    const loadDrag = (block) =>
+        new Promise((res, rej) => {
+            block.addEventListener("dragstart", function addTransferData(e) {
+                e.dataTransfer.setData("id", e.target.dataset.id);
+                res();
+            });
+        });
+
+    const dragBank = [];
+
+    for (block of allUserBlocks) {
+        dragBank.push(loadDrag(block));
+    }
+    await Promise.all(dragBank).then(() => {
+        console.log("We made it!");
+    });
+
+    console.log("tiles");
+    const tiles = document.querySelectorAll(".board:first-child .board-tile");
+    for (tile of tiles) {
+        tile.addEventListener("dragover", function (e) {
+            e.preventDefault();
+        });
+        tile.addEventListener("drop", function blockDropped(e) {
+            console.log(e.dataTransfer.getData("id"));
+        });
+    }
+
     // Game Runner
     while (!player.board.hasLost() && !playerAI.board.hasLost()) {
         await RunnerUtils.opponentRecieveAttack(
