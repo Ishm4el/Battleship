@@ -24,6 +24,23 @@ body {
     grid-template-rows: 1fr 2fr 2fr;
 }
 
+#header {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    color: white;
+}
+#title {
+    font-size: 5rem;
+    place-self: center;
+}
+#name-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    font-size: 4.5rem;
+    place-content: center;
+    text-align: center;
+}
+
 #board-space {
     align-items: center;
     justify-content: space-around;
