@@ -23,14 +23,10 @@ async function game() {
     // create drag event listeners
     const allUserBlocks = document.querySelectorAll('[draggable="true"');
 
-    const loadDrag = (block) =>
+    const loadDrag = async (block) =>
         new Promise((res, rej) => {
-            const direction = Number(
-                document.querySelector(".direction-button").dataset.direction
-            );
-
             // tile functions
-            const tiles = document.querySelectorAll(
+            let tiles = document.querySelectorAll(
                 ".board:first-child .board-tile"
             );
             // reset the tiles
@@ -46,12 +42,16 @@ async function game() {
             };
             // event triggers on block drop on tile
             const dropfoo = function (e) {
-                const id = Number(e.dataTransfer.getData("id"));
-                console.log(id);
+                const direction = Number(
+                    document.querySelector(".direction-button").dataset
+                        .direction
+                );
+                const id = Number(block.dataset.id);
                 // const id = Number(e.target.dataset.dropped);
                 const y = Number(e.target.dataset.column);
                 const x = Number(e.target.dataset.row);
                 if (player.board.validatePlacement(direction, id, y, x)) {
+                    console.log(id);
                     // remove all the draggable rules on the block
                     block.removeEventListener("dragstart", dragstartfoo);
                     block.setAttribute("draggable", "false");
@@ -66,15 +66,31 @@ async function game() {
                     cleanTiles();
                     res();
                 } else {
-                    block.removeEventListener("dragstart", dragstartfoo);
+                    block.addEventListener("dragstart", dragstartfoo);
                     cleanTiles();
-                    rej();
                 }
+            };
+
+            const dragendfoo = function (e) {
+                block.removeEventListener("dragstart", dragstartfoo);
+                block.removeEventListener("dragend", dragendfoo);
+                cleanTiles();
+                e.preventDefault();
             };
 
             const dragstartfoo = function addTransferData(e) {
                 block.removeEventListener("dragstart", addTransferData);
+                // block.addEventListener("dragend", dragendfoo);
+                tiles = document.querySelectorAll(
+                    ".board:first-child .board-tile"
+                );
 
+                console.log("dragstart");
+
+                const direction = Number(
+                    document.querySelector(".direction-button").dataset
+                        .direction
+                );
                 e.dataTransfer.setData("id", e.target.dataset.id);
                 if (direction === 0) {
                     [...tiles]
@@ -116,8 +132,9 @@ async function game() {
             () => {
                 console.log("minBlock");
             },
-            (block) => {
-                loadDrag(block);
+            async (block) => {
+                console.log("in reject");
+                return await loadDrag(block);
             }
         );
 

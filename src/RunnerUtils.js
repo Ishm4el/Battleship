@@ -17,14 +17,16 @@ const opponentRecieveAttack = async function (targeted, playerAI) {
 const playerRecieveAttack = async (player, playerAI) => {
     let enemyLandedHit = null; // the hit ship checker
 
-    enemyLandedHit = await player.board.recieveAttack(
-        playerAI.generateAttack()
-    );
+    while (enemyLandedHit === null) {
+        enemyLandedHit = await player.board.recieveAttack(
+            playerAI.generateAttack()
+        );
+    }
     if (enemyLandedHit instanceof Array) {
         playerAI.flushMarks(enemyLandedHit);
         Render.flushShip(player.boardDOM, enemyLandedHit);
     } else if (enemyLandedHit instanceof Object) {
-        if (enemyLandedHit.shipHit === true)
+        if (enemyLandedHit.shipHit !== false)
             playerAI.markAttack(enemyLandedHit);
         Render.playerBoardShot(player.boardDOM, enemyLandedHit);
     }

@@ -168,8 +168,8 @@ class Gameboard {
                 ? this.recieveAttack({ y: coord.y, x: 0 })
                 : this.recieveAttack({ y: coord.y, x: coord.x + 1 });
         } else {
-            throw "should not be here";
-            // return null;
+            console.log(JSON.stringify(coord) + `, positionID: ${positionID}`);
+            return null;
         }
     }
 
