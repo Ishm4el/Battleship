@@ -25,11 +25,101 @@ async function game() {
 
     const loadDrag = (block) =>
         new Promise((res, rej) => {
-            block.addEventListener("dragstart", function addTransferData(e) {
+            const direction = Number(
+                document.querySelector(".direction-button").dataset.direction
+            );
+
+            // tile functions
+            const tiles = document.querySelectorAll(
+                ".board:first-child .board-tile"
+            );
+            // reset the tiles
+            const cleanTiles = function () {
+                tiles.forEach((tile) => {
+                    tile.removeEventListener("dragover", dragoverfoo);
+                    tile.removeEventListener("drop", dropfoo);
+                });
+            };
+            // disables the dragover defaults
+            const dragoverfoo = function (e) {
+                e.preventDefault();
+            };
+            // event triggers on block drop on tile
+            const dropfoo = function (e) {
+                const id = Number(e.dataTransfer.getData("id"));
+                console.log(id);
+                // const id = Number(e.target.dataset.dropped);
+                const y = Number(e.target.dataset.column);
+                const x = Number(e.target.dataset.row);
+                if (player.board.validatePlacement(direction, id, y, x)) {
+                    // remove all the draggable rules on the block
+                    block.removeEventListener("dragstart", dragstartfoo);
+                    block.setAttribute("draggable", "false");
+                    block.classList.remove("draggable");
+
+                    // place the ship on the board
+                    player.board.placeShip(direction, id, y, x);
+                    Render.addShip(
+                        player.boardDOM,
+                        player.board.ships[id].getCoords()
+                    );
+                    cleanTiles();
+                    res();
+                } else {
+                    block.removeEventListener("dragstart", dragstartfoo);
+                    cleanTiles();
+                    rej();
+                }
+            };
+
+            const dragstartfoo = function addTransferData(e) {
+                block.removeEventListener("dragstart", addTransferData);
+
                 e.dataTransfer.setData("id", e.target.dataset.id);
-                res();
-            });
-        });
+                if (direction === 0) {
+                    [...tiles]
+                        .filter((tile) => {
+                            if (
+                                Number(tile.dataset.row) <=
+                                    9 - this.dataset.size &&
+                                !tile.classList.contains("board-tile-ship")
+                            )
+                                return true;
+                            else return false;
+                        })
+                        .forEach((tile) => {
+                            tile.dataset.dropped = this.dataset.id;
+                            tile.addEventListener("dragover", dragoverfoo);
+                            tile.addEventListener("drop", dropfoo);
+                        });
+                } else {
+                    [...tiles]
+                        .filter((tile) => {
+                            if (
+                                Number(tile.dataset.column) <=
+                                    9 - block.dataset.size &&
+                                !tile.classList.contains("board-tile-ship")
+                            )
+                                return true;
+                            else return false;
+                        })
+                        .forEach((tile) => {
+                            tile.dataset.dropped = block.dataset.id;
+                            tile.addEventListener("dragover", dragoverfoo);
+                            tile.addEventListener("drop", dropfoo);
+                        });
+                }
+            };
+
+            block.addEventListener("dragstart", dragstartfoo);
+        }).then(
+            () => {
+                console.log("minBlock");
+            },
+            (block) => {
+                loadDrag(block);
+            }
+        );
 
     const dragBank = [];
 
@@ -40,17 +130,7 @@ async function game() {
         console.log("We made it!");
     });
 
-    console.log("tiles");
-    const tiles = document.querySelectorAll(".board:first-child .board-tile");
-    for (tile of tiles) {
-        tile.addEventListener("dragover", function (e) {
-            e.preventDefault();
-        });
-        tile.addEventListener("drop", function blockDropped(e) {
-            console.log(e.dataTransfer.getData("id"));
-        });
-    }
-
+    console.log("Running!");
     // Game Runner
     while (!player.board.hasLost() && !playerAI.board.hasLost()) {
         await RunnerUtils.opponentRecieveAttack(

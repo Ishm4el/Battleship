@@ -147,7 +147,6 @@ class Gameboard {
 
     // react to attack at coordinate 'y' and 'x'.
     async recieveAttack(coord) {
-        console.log("in recieveAttack");
         coord.y = Number(coord.y);
         coord.x = Number(coord.x);
         const positionID = this.board[coord.y][coord.x];
