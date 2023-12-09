@@ -5,9 +5,7 @@ const Render = require("./Render");
 const opponentRecieveAttack = async function (targeted, playerAI) {
     const boardReact = await playerAI.board.recieveAttack(targeted);
     if (boardReact instanceof Array) {
-        boardReact.forEach((coord) => {
-            Render.shipHit(playerAI.boardDOM, coord);
-        });
+        Render.flushShip(playerAI.boardDOM, boardReact, 0);
     } else if (boardReact instanceof Object)
         if (boardReact.shipHit !== false)
             Render.shipHit(playerAI.boardDOM, boardReact);
@@ -24,7 +22,7 @@ const playerRecieveAttack = async (player, playerAI) => {
     }
     if (enemyLandedHit instanceof Array) {
         playerAI.flushMarks(enemyLandedHit);
-        Render.flushShip(player.boardDOM, enemyLandedHit);
+        Render.flushShip(player.boardDOM, enemyLandedHit, 1);
     } else if (enemyLandedHit instanceof Object) {
         if (enemyLandedHit.shipHit !== false)
             playerAI.markAttack(enemyLandedHit);

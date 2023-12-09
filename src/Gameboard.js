@@ -66,7 +66,7 @@ class Gameboard {
         this.#validateInitialPosition(0, size, y, x);
         for (let i = x; i < x + size; i++) {
             this.board[y][i] = id;
-            this.ships[id].appendCoord({ y: y, x: i });
+            this.ships[id].appendCoord({ y: y, x: i, id });
         }
     }
 
@@ -74,7 +74,7 @@ class Gameboard {
         this.#validateInitialPosition(1, size, y, x);
         for (let i = y; i < y + size; i++) {
             this.board[i][x] = id;
-            this.ships[id].appendCoord({ y: i, x: x });
+            this.ships[id].appendCoord({ y: i, x: x, id });
         }
     }
 
