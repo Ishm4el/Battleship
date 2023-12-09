@@ -81,7 +81,7 @@ async function coordinateAttack(board) {
     return coord;
 }
 
-function generateBottomPieces(player = null) {
+function generateBottomPieces(player = false) {
     const container = document.createElement("div");
     container.classList.add("footer-container");
     const piecesContainer = document.createElement("div");
@@ -94,7 +94,7 @@ function generateBottomPieces(player = null) {
     const blockGenerator = (size) => {
         const block = document.createElement("div");
         block.classList.add("pieces-block");
-        if (player !== null) {
+        if (player === true) {
             block.classList.add("draggable");
             block.setAttribute("draggable", "true");
         }
@@ -129,7 +129,7 @@ function generateBottomPieces(player = null) {
     botRow.append(blocks[3], blocks[4]);
     piecesContainer.append(topRow, botRow);
     container.append(piecesContainer);
-    if (player === null) container.appendChild(generateDirectionButton());
+    if (player === true) container.appendChild(generateDirectionButton());
     return container;
 }
 
