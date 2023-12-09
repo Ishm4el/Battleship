@@ -146,7 +146,8 @@ class Gameboard {
     }
 
     // react to attack at coordinate 'y' and 'x'.
-    recieveAttack(coord) {
+    async recieveAttack(coord) {
+        console.log("in recieveAttack");
         coord.y = Number(coord.y);
         coord.x = Number(coord.x);
         const positionID = this.board[coord.y][coord.x];
@@ -157,6 +158,8 @@ class Gameboard {
             else return this.ships[positionID].getCoords();
         } else if (positionID === null) {
             this.board[coord.y][coord.x] = -1;
+            coord.shipHit = false;
+            return coord;
         } else if (coord.smart === undefined) {
             return Math.floor(Math.random() * 2) === 0
                 ? coord.y === 9
@@ -165,7 +168,10 @@ class Gameboard {
                 : coord.x === 9
                 ? this.recieveAttack({ y: coord.y, x: 0 })
                 : this.recieveAttack({ y: coord.y, x: coord.x + 1 });
-        } else return null;
+        } else {
+            throw "should not be here";
+            // return null;
+        }
     }
 
     hasLost() {

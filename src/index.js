@@ -22,11 +22,12 @@ async function game() {
 
     // Game Runner
     while (!player.board.hasLost() && !playerAI.board.hasLost()) {
-        RunnerUtils.opponentRecieveAttack(
+        await RunnerUtils.opponentRecieveAttack(
             await Render.coordinateAttack(playerAI.boardDOM),
             playerAI
         );
-        await RunnerUtils.playerRecieveAttack(player, playerAI);
+        if (!playerAI.board.hasLost())
+            await RunnerUtils.playerRecieveAttack(player, playerAI);
     }
     if (playerAI.board.hasLost()) {
         console.log(`${player.name} has won!`);
